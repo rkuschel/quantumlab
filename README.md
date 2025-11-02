@@ -1,14 +1,8 @@
-Below is a **complete `README.md`** you can drop into your repo root.
-It documents the purpose, structure, usage, and requirements for both the Bash and PowerShell versions of your scripts.
-I wrote it in a clean, professional, GitHub-friendly style with code blocks, tables, and example commands.
-
----
-
 ```markdown
 # Quantum-Safe Dev Environment Scripts
 
-This repository contains automation scripts for setting up a **Docker-based OpenSSL 3 development environment with post-quantum cryptography (PQC) support**, using the `openquantumsafe/oqs-ossl3` image.  
-Both **Linux/macOS (Bash)** and **Windows (PowerShell)** versions are provided.
+This repository contains automation scripts for setting up a Docker-based OpenSSL 3 development environment with post-quantum cryptography (PQC) support, using the `openquantumsafe/oqs-ossl3` image.  
+Both Linux/macOS (Bash) and Windows (PowerShell) versions are provided.
 
 The environment includes:
 
@@ -19,42 +13,38 @@ The environment includes:
 
 ---
 
-## 📁 Repository Structure
-
-```
+## Repository Structure
 
 /
 ├── bash/
-│   ├── 1.sh       # Builds image and runs container interactively
-│   └── 2.sh       # Same as above but with inline comments for learning/reference
+│ ├── 1.sh # Builds image and runs container interactively
+│ └── 2.sh # Same as above but with inline comments for learning/reference
 │
 └── Windows/
-├── 1.ps1      # PowerShell version of build + run script
-└── 2.ps1      # Commented version for Windows users
-
-````
+├── 1.ps1 # PowerShell version of build + run script
+└── 2.ps1 # Commented version for Windows users
 
 | Folder | OS / Shell | Contents |
 |--------|------------|----------|
-| `bash/` | Linux / macOS (Bash) | `.sh` scripts for building & running container |
+| `bash/` | Linux / macOS (Bash) | `.sh` scripts for building and running the container |
 | `Windows/` | Windows PowerShell | `.ps1` equivalents of the same scripts |
 
 ---
 
-## ✅ What the Scripts Do
+## What the Scripts Do
 
 | Step | Description |
 |------|-------------|
 | 1 | Create a temporary build context and dynamically write a `Dockerfile` |
 | 2 | Build a Docker image that installs Bash, Vim, cURL, and Apache with SSL |
 | 3 | Serve a demo web page inside the container |
-| 4 | Auto-generate a **quantum-safe certificate** on first run using `dilithium3` + `mlkem768` |
+| 4 | Auto-generate a quantum-safe certificate on first run using `dilithium3` and `mlkem768` |
 | 5 | Drop user into an interactive shell with OpenSSL PQC tools ready |
 | 6 | Expose ports `8080` (HTTP) and `8443` (HTTPS) to the host |
 
 ---
 
-## 🔧 Requirements
+## Requirements
 
 ### Linux/macOS
 - Docker installed and running
@@ -63,15 +53,16 @@ The environment includes:
 
 ### Windows
 - Docker Desktop (WSL2 backend recommended)
-- PowerShell 7+ recommended (works in Windows PowerShell 5.1)
-- Execution policy may need to be changed:  
-  ```powershell
-  Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+- PowerShell 7+ recommended (compatible with Windows PowerShell 5.1)
+- Execution policy may need to be changed:
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 ````
 
 ---
 
-## ▶️ Usage
+## Usage
 
 ### On Linux/macOS
 
@@ -81,7 +72,7 @@ chmod +x 1.sh
 ./1.sh
 ```
 
-Or run the fully commented teaching version:
+Or run the fully commented version:
 
 ```bash
 ./2.sh
@@ -104,9 +95,9 @@ Or the commented version:
 
 ---
 
-## 🌐 After Container Starts
+## After Container Starts
 
-You should see a message like:
+You should see a message such as:
 
 ```
 Container ready. Try:
@@ -114,15 +105,15 @@ Container ready. Try:
   curl -k https://localhost:8443
 ```
 
-Then you will be inside a Bash shell **inside the container**.
+Then you will be inside a Bash shell inside the container.
 
-### Test Dilithium support in OpenSSL:
+### Test Dilithium support in OpenSSL
 
 ```bash
 openssl list -signature-algorithms | grep -i dilithium
 ```
 
-### Test the HTTPS endpoint (host machine):
+### Test the HTTPS endpoint from the host system
 
 ```bash
 curl -k https://localhost:8443
@@ -137,20 +128,20 @@ Expected output:
 
 ---
 
-## 🔐 About the Post-Quantum Certificate
+## About the Post-Quantum Certificate
 
-The container generates a new hybrid certificate **on each fresh run**, using:
+The container generates a new hybrid certificate on each fresh run, using:
 
-* **Dilithium3** (signature)
-* **ML-KEM-768** (key encapsulation)
+* Dilithium3 (signature)
+* ML-KEM-768 (key encapsulation)
 * Valid for 1 day (`-days 1`)
 * Self-signed (`-x509`)
 
-This enables experimentation with PQC-ready TLS stacks, browsers, proxies, etc.
+This enables experimentation with PQC-ready TLS stacks, browsers, proxies, and related tools.
 
 ---
 
-## 🧽 Cleanup
+## Cleanup
 
 The scripts automatically remove the temporary build folder after exit.
 
@@ -162,19 +153,19 @@ docker rmi oqs-dev
 
 ---
 
-## 📜 License
+## License
 
 Copyright 2025 Robert Kuschel
 Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License...
+You may not use this file except in compliance with the License.
 
-| License    | Notes                                     |
-| ---------- | ----------------------------------------- |
-| Apache 2.0 | ✅ Permissive + explicit patent protection |
+| License    | Notes                                      |
+| ---------- | ------------------------------------------ |
+| Apache 2.0 | Permissive, includes explicit patent grant |
 
 ---
 
-## 🗺️ Roadmap (optional enhancements)
+## Roadmap (optional enhancements)
 
 * Add `docker-compose.yml` for optional persistent volumes
 * Add flag for "no cleanup" debugging mode
@@ -184,21 +175,7 @@ you may not use this file except in compliance with the License...
 
 ---
 
-## ✉️ Maintainer
+## Maintainer
+Author: Rob Kuschel
 
-**Author:** Rob Kuschel
-**Contact:** (add email or GitHub profile link here)
-
-```
----
-
-### Want me to tailor it further?
-
-✅ Add screenshots  
-✅ Add shields.io badges (e.g., Docker, MIT, PowerShell, Bash)  
-✅ Add table of Windows vs Linux behavior  
-✅ Add animated terminal GIF demo  
-✅ Rewrite in more formal or more casual tone  
-
-Just say the word and I’ll revise accordingly.
 ```
