@@ -1,33 +1,21 @@
-```markdown
-# Quantum-Safe Dev Environment Scripts
+## Quantum-Safe Dev Environment Scripts
 
-This repository contains automation scripts for setting up a Docker-based OpenSSL 3 development environment with post-quantum cryptography (PQC) support, using the `openquantumsafe/oqs-ossl3` image.  
-Both Linux/macOS (Bash) and Windows (PowerShell) versions are provided.
+[![Quantum-Safe Vault Boy](images/vaultboy.png)]
 
-The environment includes:
+This repository contains automation scripts for setting up a Docker-based OpenSSL 3 development environment with post-quantum cryptography (PQC) support, using the `openquantumsafe/oqs-ossl3` image.
 
-- OpenSSL 3 with ML-KEM and Dilithium PQC algorithms
-- Apache HTTP server with TLS enabled
-- Automatic generation of a hybrid post-quantum certificate at container startup
-- Optional interactive shell inside the container for development and testing
+Both Linux/macOS (**Bash**) and Windows (**PowerShell**) versions are provided. All scripts run a container that includes OpenSSL 3 with PQC algorithms, Apache HTTPD, and a hybrid post-quantum TLS endpoint.
 
----
+## Script Overview
 
-## Repository Structure
-
-/
-├── bash/
-│ ├── 1.sh # Builds image and runs container interactively
-│ └── 2.sh # Same as above but with inline comments for learning/reference
-│
-└── Windows/
-├── 1.ps1 # PowerShell version of build + run script
-└── 2.ps1 # Commented version for Windows users
-
-| Folder | OS / Shell | Contents |
-|--------|------------|----------|
-| `bash/` | Linux / macOS (Bash) | `.sh` scripts for building and running the container |
-| `Windows/` | Windows PowerShell | `.ps1` equivalents of the same scripts |
+| Script | Platform | Purpose |
+|--------|----------|---------|
+| `bash/1.sh` | Linux / macOS | Build and run container |
+| `bash/2.sh` | Linux / macOS | Same as above, but commented for learning |
+| `bash/3.sh` | Linux / macOS | Cleanup: removes container, image, and volumes |
+| `powershell/1.ps1` | Windows PowerShell | Build and run container |
+| `powershell/2.ps1` | Windows PowerShell | Same as above, but commented for learning |
+| `powershell/3.ps1` | Windows PowerShell | Cleanup: removes container, image, and volumes |
 
 ---
 
@@ -35,147 +23,49 @@ The environment includes:
 
 | Step | Description |
 |------|-------------|
-| 1 | Create a temporary build context and dynamically write a `Dockerfile` |
-| 2 | Build a Docker image that installs Bash, Vim, cURL, and Apache with SSL |
-| 3 | Serve a demo web page inside the container |
-| 4 | Auto-generate a quantum-safe certificate on first run using `dilithium3` and `mlkem768` |
-| 5 | Drop user into an interactive shell with OpenSSL PQC tools ready |
-| 6 | Expose ports `8080` (HTTP) and `8443` (HTTPS) to the host |
+| 1 | Create a temporary build context and dynamically write a `Dockerfile` and build a Docker image containing OpenSSL 3, Apache, and PQC toolchains |
+| 2 | Start container and serve a demo TLS site using a hybrid post-quantum certificate, auto-generate a Dilithium + ML-KEM certificate on first run, and test using curl over 4433. |
+| 3 | Nuclear clean up |
+
+---
+
+## Architecture Support
+
+These scripts require:
+
+- **x86_64 (AMD64) CPU architecture**
+- **64-bit operating system**
+- **Docker Desktop or Docker Engine (Linux/macOS/Windows)**  
+- Apple Silicon (ARM64) is *not supported* unless running the image under emulation (Rosetta/`--platform linux/amd64`)
 
 ---
 
 ## Requirements
 
-### Linux/macOS
+### Linux / macOS
 - Docker installed and running
 - Bash (`/bin/bash`)
-- `curl` (optional for testing container output)
 
 ### Windows
 - Docker Desktop (WSL2 backend recommended)
-- PowerShell 7+ recommended (compatible with Windows PowerShell 5.1)
-- Execution policy may need to be changed:
+- PowerShell 7+ recommended (also works in Windows PowerShell 5.1)
+- You may need to allow script execution:
 
-```powershell
+#powershell
+
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-````
-
----
-
-## Usage
-
-### On Linux/macOS
-
-```bash
-cd bash
-chmod +x 1.sh
-./1.sh
-```
-
-Or run the fully commented version:
-
-```bash
-./2.sh
-```
-
----
-
-### On Windows PowerShell
-
-```powershell
-cd Windows
-.\1.ps1
-```
-
-Or the commented version:
-
-```powershell
-.\2.ps1
-```
-
----
-
-## After Container Starts
-
-You should see a message such as:
-
-```
-Container ready. Try:
-  openssl list -signature-algorithms | grep -i dilithium
-  curl -k https://localhost:8443
-```
-
-Then you will be inside a Bash shell inside the container.
-
-### Test Dilithium support in OpenSSL
-
-```bash
-openssl list -signature-algorithms | grep -i dilithium
-```
-
-### Test the HTTPS endpoint from the host system
-
-```bash
-curl -k https://localhost:8443
-```
-
-Expected output:
-
-```html
-<h1>Quantum-Safe Dev Environment</h1>
-<p>OpenSSL + Apache + ML-KEM + Dilithium</p>
-```
-
----
-
-## About the Post-Quantum Certificate
-
-The container generates a new hybrid certificate on each fresh run, using:
-
-* Dilithium3 (signature)
-* ML-KEM-768 (key encapsulation)
-* Valid for 1 day (`-days 1`)
-* Self-signed (`-x509`)
-
-This enables experimentation with PQC-ready TLS stacks, browsers, proxies, and related tools.
-
----
-
-## Cleanup
-
-The scripts automatically remove the temporary build folder after exit.
-
-To remove the built image manually:
-
-```bash
-docker rmi oqs-dev
-```
-
----
 
 ## License
 
 Copyright 2025 Robert Kuschel
-Licensed under the Apache License, Version 2.0 (the "License");
-You may not use this file except in compliance with the License.
 
 | License    | Notes                                      |
 | ---------- | ------------------------------------------ |
-| Apache 2.0 | Permissive, includes explicit patent grant |
-
----
-
-## Roadmap (optional enhancements)
-
-* Add `docker-compose.yml` for optional persistent volumes
-* Add flag for "no cleanup" debugging mode
-* Add CI workflow (GitHub Actions) to auto-build image
-* Add option to enable PQC-TLS in Apache config (port 8443)
-* Add Wireshark instructions for PQC handshake visibility
+| Apache 2.0 |  [TLDR for Apache 2.0](https://www.tldrlegal.com/license/apache-license-2-0-apache-2-0)
 
 ---
 
 ## Maintainer
-Author: Rob Kuschel
+[Rob Kuschel — RobKuschel.com](https://RobKuschel.com)
 
 ```
