@@ -2,7 +2,7 @@
 
 ![Quantum-Safe Vault Boy](images/vaultboy.png)
 
-This repository contains automation scripts for setting up a Docker-based OpenSSL 3 development environment with post-quantum cryptography (PQC) support, using the `openquantumsafe/oqs-ossl3` image.
+This repository contains automation scripts for setting up a Docker-based OpenSSL 3 development environment with post-quantum cryptography (PQC) support, using the `openquantumsafe/httpd` image.
 
 Both Linux/macOS (**Bash**) and Windows (**PowerShell**) versions are provided. All scripts run a container that includes OpenSSL 3 with PQC algorithms, Apache HTTPD, and a hybrid post-quantum TLS endpoint.
 
